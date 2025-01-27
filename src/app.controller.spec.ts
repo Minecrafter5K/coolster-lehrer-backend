@@ -19,4 +19,10 @@ describe('AppController', () => {
       expect(appController.getHello()).toBe('Hello World!');
     });
   });
+
+  describe('leaderboard', () => {
+    it('should return data', () => {
+      expect(appController.getLeaderboard()).toBeDefined();
+    });
+  });
 });
