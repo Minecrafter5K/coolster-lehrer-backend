@@ -1,0 +1,58 @@
+name: CI
+
+on:
+  pull_request:
+    branches: ["*"]
+  push:
+    branches: ["main"]
+  merge_group:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup
+        uses: actions/setup-node@v4
+        with:
+          node-version: 21
+      - shell: bash
+        run: npm install
+
+      - name: Lint
+        run: npm run lint
+
+  format:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup
+        uses: actions/setup-node@v4
+        with:
+          node-version: 21
+      - shell: bash
+        run: npm install
+
+      - name: Format
+        run: npm run format
+
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup
+        uses: actions/setup-node@v4
+        with:
+          node-version: 21
+      - shell: bash
+        run: npm install
+
+      - name: Format
+        run: npm run test
