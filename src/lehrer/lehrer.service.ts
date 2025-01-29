@@ -4,10 +4,9 @@ import { UpdateLehrerDto } from './dto/update-lehrer.dto';
 import { drizzle, MySql2Database } from 'drizzle-orm/mysql2';
 import { lehrerTable } from '../db/schema';
 import { eq } from 'drizzle-orm';
-import { ILehrerService } from './iLehrerService';
 
 @Injectable()
-export class LehrerService implements ILehrerService {
+export class LehrerService implements LehrerService {
   db: MySql2Database;
   constructor(@Inject('DATABASE_URL') database_url: string) {
     if (!database_url) throw new Error('no database url');

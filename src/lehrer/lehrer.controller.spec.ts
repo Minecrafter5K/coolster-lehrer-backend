@@ -8,6 +8,9 @@ import { migrate } from 'drizzle-orm/mysql2/migrator';
 import { reset, seed } from 'drizzle-seed';
 import { lehrerTable } from '../db/schema';
 
+const SECONDS = 1000;
+jest.setTimeout(70 * SECONDS);
+
 describe('LehrerController', () => {
   let urlProvider: Provider;
   let dbContainer: StartedMySqlContainer;
@@ -39,6 +42,7 @@ describe('LehrerController', () => {
     await seed(db, lehrerTable);
 
     const module: TestingModule = await Test.createTestingModule({
+      controllers: [LehrerController],
       providers: [LehrerService, urlProvider],
     }).compile();
 
