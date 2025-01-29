@@ -9,11 +9,11 @@ import {
 } from '@nestjs/common';
 import { CreateLehrerDto } from './dto/create-lehrer.dto';
 import { UpdateLehrerDto } from './dto/update-lehrer.dto';
-import { ILehrerService } from './iLehrerService';
+import { LehrerService } from './lehrer.service';
 
 @Controller('lehrer')
 export class LehrerController {
-  constructor(private readonly lehrerService: ILehrerService) {}
+  constructor(private readonly lehrerService: LehrerService) {}
 
   @Post()
   create(@Body() createLehrerDto: CreateLehrerDto) {

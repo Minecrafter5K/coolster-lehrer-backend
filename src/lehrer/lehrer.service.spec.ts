@@ -6,7 +6,6 @@ import { drizzle, MySql2Database } from 'drizzle-orm/mysql2';
 import { reset, seed } from 'drizzle-seed';
 
 import { lehrerTable } from '../db/schema';
-import path from 'node:path';
 import { migrate } from 'drizzle-orm/mysql2/migrator';
 
 const SECONDS = 1000;
