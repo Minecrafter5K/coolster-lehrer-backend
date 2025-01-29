@@ -38,8 +38,8 @@ describe('LehrerService', () => {
   });
 
   beforeEach(async () => {
-    await reset(db, lehrerTable);
-    await seed(db, lehrerTable);
+    await reset(db, { lehrerTable });
+    await seed(db, { lehrerTable });
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [LehrerService, urlProvider],
@@ -50,5 +50,51 @@ describe('LehrerService', () => {
 
   it('should be defined', () => {
     expect(service).toBeDefined();
+  });
+
+  describe('findAll', () => {
+    it('should return an array of lehrer', async () => {
+      const result = await service.findAll();
+      expect(result).toBeDefined();
+      expect(result).toBeInstanceOf(Array);
+    });
+    it('should be more than one lehrer', async () => {
+      const result = await service.findAll();
+      expect(result.length).toBeGreaterThan(0);
+    });
+  });
+
+  describe('findOne', () => {
+    it('should return something', async () => {
+      const result = await service.findOne(1);
+      expect(result).toBeDefined();
+    });
+    it('should return something of the type lehrer', async () => {
+      const result = await service.findOne(1);
+      expect(result).toHaveProperty('id');
+      expect(result).toHaveProperty('name');
+      expect(result).toHaveProperty('coolness');
+    });
+  });
+
+  describe('create', () => {
+    it('should return null', async () => {
+      const result = await service.create({ name: 'test', coolness: 1 });
+      expect(result).toBeNull();
+    });
+  });
+
+  describe('update', () => {
+    it('should return null', async () => {
+      const result = await service.update(1, { name: 'test', coolness: 1 });
+      expect(result).toBeNull();
+    });
+  });
+
+  describe('remove', () => {
+    it('should return null', async () => {
+      const result = await service.remove(1);
+      expect(result).toBeNull();
+    });
   });
 });
