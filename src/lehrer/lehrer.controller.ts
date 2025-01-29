@@ -7,13 +7,13 @@ import {
   Param,
   Delete,
 } from '@nestjs/common';
-import { LehrerService } from './lehrer.service';
 import { CreateLehrerDto } from './dto/create-lehrer.dto';
 import { UpdateLehrerDto } from './dto/update-lehrer.dto';
+import { ILehrerService } from './iLehrerService';
 
 @Controller('lehrer')
 export class LehrerController {
-  constructor(private readonly lehrerService: LehrerService) {}
+  constructor(private readonly lehrerService: ILehrerService) {}
 
   @Post()
   create(@Body() createLehrerDto: CreateLehrerDto) {
@@ -21,7 +21,7 @@ export class LehrerController {
   }
 
   @Get()
-  async findAll() {
+  findAll() {
     return this.lehrerService.findAll();
   }
 

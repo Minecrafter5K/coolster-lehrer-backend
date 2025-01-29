@@ -1,20 +1,20 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { LehrerController } from './lehrer.controller';
+import { LehrerService } from './lehrer.service';
+
 import { LehrerMockService } from './lehrerMock.service';
 
-describe('LehrerController', () => {
-  let controller: LehrerController;
+describe('LehrerService', () => {
+  let service: LehrerService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      controllers: [LehrerController],
       providers: [LehrerMockService],
     }).compile();
 
-    controller = module.get<LehrerController>(LehrerController);
+    service = module.get<LehrerService>(LehrerService);
   });
 
   it('should be defined', () => {
-    expect(controller).toBeDefined();
+    expect(service).toBeDefined();
   });
 });

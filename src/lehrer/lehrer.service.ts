@@ -4,9 +4,10 @@ import { UpdateLehrerDto } from './dto/update-lehrer.dto';
 import { drizzle, MySql2Database } from 'drizzle-orm/mysql2';
 import { lehrerTable } from '../db/schema';
 import { eq } from 'drizzle-orm';
+import { ILehrerService } from './iLehrerService';
 
 @Injectable()
-export class LehrerService {
+export class LehrerService implements ILehrerService {
   db: MySql2Database;
   constructor(@Inject('DATABASE_URL') database_url: string) {
     if (!database_url) throw new Error('no database url');
@@ -15,7 +16,8 @@ export class LehrerService {
   }
 
   async create(createLehrerDto: CreateLehrerDto) {
-    return this.db.insert(lehrerTable).values(createLehrerDto);
+    await this.db.insert(lehrerTable).values(createLehrerDto);
+    return null;
   }
 
   async findAll() {
@@ -23,21 +25,25 @@ export class LehrerService {
   }
 
   async findOne(id: number) {
-    return this.db
+    const lehrer = await this.db
       .select()
       .from(lehrerTable)
       .where(eq(lehrerTable.id, id))
-      .limit(1);
+      .limit(1)
+      .execute();
+    return lehrer[0];
   }
 
-  update(id: number, updateLehrerDto: UpdateLehrerDto) {
-    return this.db
+  async update(id: number, updateLehrerDto: UpdateLehrerDto) {
+    await this.db
       .update(lehrerTable)
       .set(updateLehrerDto)
       .where(eq(lehrerTable.id, id));
+    return null;
   }
 
-  remove(id: number) {
-    return this.db.delete(lehrerTable).where(eq(lehrerTable.id, id));
+  async remove(id: number) {
+    await this.db.delete(lehrerTable).where(eq(lehrerTable.id, id));
+    return null;
   }
 }
