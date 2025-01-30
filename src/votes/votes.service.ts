@@ -17,6 +17,11 @@ export class VotesService {
     return null;
   }
 
+  async bulkCreate(createVoteDto: CreateVoteDto[]) {
+    const result = await this.db.insert(voteTable).values(createVoteDto);
+    return result[0].affectedRows;
+  }
+
   async findAll() {
     return this.db.select().from(voteTable);
   }

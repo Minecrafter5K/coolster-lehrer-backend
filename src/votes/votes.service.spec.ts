@@ -77,5 +77,43 @@ describe('VotesService', () => {
         },
       ]);
     });
+    it('should insert data into DB', async () => {
+      await reset(db, { voteTable });
+
+      await service.create({ lehrerId: 109, vote: 0 });
+
+      const votes = await db.select().from(voteTable);
+      expect(votes).toEqual([{ id: 1, lehrerId: 109, vote: 0 }]);
+    });
+  });
+
+  describe('bulkCreate', () => {
+    it('should return number of inserted rows', async () => {
+      const result1 = await service.bulkCreate([{ lehrerId: 1, vote: 0 }]);
+      expect(result1).toBe(1);
+      const result2 = await service.bulkCreate([
+        { lehrerId: 1, vote: 0 },
+        { lehrerId: 2, vote: 1 },
+      ]);
+      expect(result2).toBe(2);
+    });
+    it('should insert data into DB', async () => {
+      await reset(db, { voteTable });
+
+      const data = [
+        { lehrerId: 1, vote: 0 },
+        { lehrerId: 2, vote: 1 },
+      ];
+
+      await service.bulkCreate(data);
+
+      const votes = await db.select().from(voteTable);
+      expect(votes).toEqual(withID(data));
+    });
   });
 });
+
+type WithID<T> = T & { id: number };
+function withID<T>(data: T[]): WithID<T>[] {
+  return data.map((item, index) => ({ ...item, id: index + 1 }));
+}

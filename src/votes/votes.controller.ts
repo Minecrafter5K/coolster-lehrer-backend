@@ -11,6 +11,11 @@ export class VotesController {
     return this.votesService.create(createVoteDto);
   }
 
+  @Post('bulk')
+  bulkCreate(@Body() createVoteDto: CreateVoteDto[]) {
+    return this.votesService.bulkCreate(createVoteDto);
+  }
+
   @Get()
   findAll() {
     return this.votesService.findAll();
