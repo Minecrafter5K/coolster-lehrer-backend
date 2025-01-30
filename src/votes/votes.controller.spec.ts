@@ -1,21 +1,21 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { LehrerController } from './lehrer.controller';
-import { LehrerService } from './lehrer.service';
+import { VotesController } from './votes.controller';
+import { VotesService } from './votes.service';
 import { Provider } from '@nestjs/common';
 import { MySqlContainer, StartedMySqlContainer } from '@testcontainers/mysql';
 import { drizzle, MySql2Database } from 'drizzle-orm/mysql2';
 import { migrate } from 'drizzle-orm/mysql2/migrator';
 import { reset, seed } from 'drizzle-seed';
-import { lehrerTable } from '../db/schema';
+import { voteTable } from '../db/schema';
 
 const SECONDS = 1000;
 jest.setTimeout(70 * SECONDS);
 
-describe('LehrerController', () => {
+describe('VotesController', () => {
   let urlProvider: Provider;
   let dbContainer: StartedMySqlContainer;
   let db: MySql2Database;
-  let controller: LehrerController;
+  let controller: VotesController;
 
   beforeAll(async () => {
     dbContainer = await new MySqlContainer('mysql:8.4')
@@ -38,16 +38,17 @@ describe('LehrerController', () => {
   });
 
   beforeEach(async () => {
-    await reset(db, { lehrerTable });
-    await seed(db, { lehrerTable });
+    await reset(db, { voteTable });
+    await seed(db, { voteTable });
 
     const module: TestingModule = await Test.createTestingModule({
-      controllers: [LehrerController],
-      providers: [LehrerService, urlProvider],
+      controllers: [VotesController],
+      providers: [VotesService, urlProvider],
     }).compile();
 
-    controller = module.get<LehrerController>(LehrerController);
+    controller = module.get<VotesController>(VotesController);
   });
+
   it('should be defined', () => {
     expect(controller).toBeDefined();
   });

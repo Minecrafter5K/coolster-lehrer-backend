@@ -5,3 +5,9 @@ export const lehrerTable = mysqlTable('lehrer_table', {
   name: varchar('name', { length: 255 }).notNull(),
   coolness: int('coolness').notNull(),
 });
+
+export const voteTable = mysqlTable('vote_table', {
+  id: serial('id').primaryKey(),
+  lehrerId: int('lehrer_id').notNull(),
+  vote: int('vote').notNull(),
+});

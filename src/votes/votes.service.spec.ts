@@ -1,21 +1,20 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { LehrerController } from './lehrer.controller';
-import { LehrerService } from './lehrer.service';
+import { VotesService } from './votes.service';
 import { Provider } from '@nestjs/common';
 import { MySqlContainer, StartedMySqlContainer } from '@testcontainers/mysql';
 import { drizzle, MySql2Database } from 'drizzle-orm/mysql2';
 import { migrate } from 'drizzle-orm/mysql2/migrator';
 import { reset, seed } from 'drizzle-seed';
-import { lehrerTable } from '../db/schema';
+import { voteTable } from '../db/schema';
 
 const SECONDS = 1000;
 jest.setTimeout(70 * SECONDS);
 
-describe('LehrerController', () => {
+describe('VotesService', () => {
   let urlProvider: Provider;
   let dbContainer: StartedMySqlContainer;
   let db: MySql2Database;
-  let controller: LehrerController;
+  let service: VotesService;
 
   beforeAll(async () => {
     dbContainer = await new MySqlContainer('mysql:8.4')
@@ -38,17 +37,45 @@ describe('LehrerController', () => {
   });
 
   beforeEach(async () => {
-    await reset(db, { lehrerTable });
-    await seed(db, { lehrerTable });
+    await reset(db, { voteTable });
+    await seed(db, { voteTable });
 
     const module: TestingModule = await Test.createTestingModule({
-      controllers: [LehrerController],
-      providers: [LehrerService, urlProvider],
+      providers: [VotesService, urlProvider],
     }).compile();
 
-    controller = module.get<LehrerController>(LehrerController);
+    service = module.get<VotesService>(VotesService);
   });
+
   it('should be defined', () => {
-    expect(controller).toBeDefined();
+    expect(service).toBeDefined();
+  });
+
+  describe('findAll', () => {
+    it('should return an array of votes', async () => {
+      const result = await service.findAll();
+      expect(result).toBeInstanceOf(Array);
+    });
+  });
+
+  describe('create', () => {
+    it('should return null', async () => {
+      const result = await service.create({ lehrerId: 1, vote: 0 });
+      expect(result).toBeNull();
+    });
+    it('should create vote in DB', async () => {
+      await reset(db, { voteTable });
+
+      await service.create({ lehrerId: 109, vote: 0 });
+
+      const votes = await db.select().from(voteTable);
+      expect(votes).toEqual([
+        {
+          id: 1,
+          lehrerId: 109,
+          vote: 0,
+        },
+      ]);
+    });
   });
 });
