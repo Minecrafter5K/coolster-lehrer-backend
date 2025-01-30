@@ -5,7 +5,7 @@ import { MySqlContainer, StartedMySqlContainer } from '@testcontainers/mysql';
 import { drizzle, MySql2Database } from 'drizzle-orm/mysql2';
 import { migrate } from 'drizzle-orm/mysql2/migrator';
 import { reset, seed } from 'drizzle-seed';
-import { voteTable } from '../db/schema';
+import { lehrerTable, voteTable } from '../db/schema';
 
 const SECONDS = 1000;
 jest.setTimeout(70 * SECONDS);
@@ -109,6 +109,30 @@ describe('VotesService', () => {
 
       const votes = await db.select().from(voteTable);
       expect(votes).toEqual(withID(data));
+    });
+  });
+
+  describe('rank', () => {
+    it('should return all lehrer', async () => {
+      const result = await service.rank();
+      const expectedLehrer = await db.select().from(lehrerTable);
+
+      expect(result).toHaveLength(expectedLehrer.length);
+    });
+
+    it('should return ordered by votes', async () => {
+      await reset(db, { voteTable });
+      await seed(db, { lehrerTable });
+      await db.insert(voteTable).values([
+        { lehrerId: 2, vote: 0 },
+        { lehrerId: 2, vote: 1 },
+        { lehrerId: 3, vote: 1 },
+        { lehrerId: 1, vote: -1 },
+      ]);
+
+      const result = await service.rank();
+      const orderedResult = [...result].sort((a, b) => b.score - a.score);
+      expect(result).toEqual(orderedResult);
     });
   });
 });

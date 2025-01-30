@@ -21,6 +21,11 @@ export class VotesController {
     return this.votesService.findAll();
   }
 
+  @Get('rank')
+  rank() {
+    return this.votesService.rank();
+  }
+
   // @Delete(':id')
   // remove(@Param('id') id: string) {
   //   return this.votesService.remove(+id);

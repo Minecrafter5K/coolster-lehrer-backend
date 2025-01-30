@@ -94,4 +94,14 @@ describe('VotesController', () => {
       expect(spy).toBeCalled();
     });
   });
+
+  describe('rank', () => {
+    it('should call rank of service', async () => {
+      const spy = jest.spyOn(controller['votesService'], 'rank');
+
+      await controller.rank();
+
+      expect(spy).toBeCalled();
+    });
+  });
 });
