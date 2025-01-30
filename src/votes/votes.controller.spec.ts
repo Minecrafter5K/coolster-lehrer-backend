@@ -52,4 +52,30 @@ describe('VotesController', () => {
   it('should be defined', () => {
     expect(controller).toBeDefined();
   });
+
+  describe('create', () => {
+    it('should call create of service', async () => {
+      const spy = jest.spyOn(controller['votesService'], 'create');
+
+      await controller.create({
+        lehrerId: 1,
+        vote: 0,
+      });
+
+      expect(spy).toBeCalledWith({
+        lehrerId: 1,
+        vote: 0,
+      });
+    });
+  });
+
+  describe('findAll', () => {
+    it('should call findAll of service', async () => {
+      const spy = jest.spyOn(controller['votesService'], 'findAll');
+
+      await controller.findAll();
+
+      expect(spy).toBeCalled();
+    });
+  });
 });

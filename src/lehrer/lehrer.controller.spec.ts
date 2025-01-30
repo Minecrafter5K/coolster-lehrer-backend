@@ -51,4 +51,66 @@ describe('LehrerController', () => {
   it('should be defined', () => {
     expect(controller).toBeDefined();
   });
+
+  describe('create', () => {
+    it('should call create of service', async () => {
+      const spy = jest.spyOn(controller['lehrerService'], 'create');
+
+      await controller.create({
+        name: 'Max',
+        coolness: 10,
+      });
+
+      expect(spy).toHaveBeenCalledWith({
+        name: 'Max',
+        coolness: 10,
+      });
+    });
+  });
+
+  describe('findAll', () => {
+    it('should call findAll of service', async () => {
+      const spy = jest.spyOn(controller['lehrerService'], 'findAll');
+
+      await controller.findAll();
+
+      expect(spy).toHaveBeenCalled();
+    });
+  });
+
+  describe('findOne', () => {
+    it('should call findOne of service', async () => {
+      const spy = jest.spyOn(controller['lehrerService'], 'findOne');
+
+      await controller.findOne('1');
+
+      expect(spy).toHaveBeenCalledWith(1);
+    });
+  });
+
+  describe('update', () => {
+    it('should call update of service', async () => {
+      const spy = jest.spyOn(controller['lehrerService'], 'update');
+
+      await controller.update('1', {
+        name: 'Max',
+        coolness: 10,
+      });
+
+      expect(spy).toHaveBeenCalledWith(1, {
+        name: 'Max',
+        coolness: 10,
+      });
+    });
+  });
+
+  describe('remove', () => {
+    it('should call remove of service', () => {
+      const spy = jest.spyOn(controller['lehrerService'], 'remove');
+
+      controller.remove('1');
+
+      expect(spy).toHaveBeenCalledWith(1);
+    });
+  });
 });
