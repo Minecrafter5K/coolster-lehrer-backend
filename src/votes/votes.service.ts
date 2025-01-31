@@ -31,7 +31,7 @@ export class VotesService {
     const lehrer = await this.db.select().from(lehrerTable);
     const votes = await this.db.select().from(voteTable);
 
-    const mappedLehrer = lehrer.map((l) => {
+    const lehrerWithScore = lehrer.map((l) => {
       let score = 0;
 
       votes
@@ -46,15 +46,19 @@ export class VotesService {
       };
     });
 
-    mappedLehrer.sort((a, b) => b.score - a.score);
+    let currentRank = 0;
 
-    // add rank to mappedLehrer array
-    return mappedLehrer.map((l, index) => {
-      return {
-        ...l,
-        rank: index + 1,
-      };
-    });
+    return lehrerWithScore
+      .sort((a, b) => b.score - a.score)
+      .map((l, i, arr) => {
+        if (i === 0 || arr[i - 1].score !== l.score) {
+          currentRank += 1;
+        }
+        return {
+          ...l,
+          rank: currentRank,
+        };
+      });
   }
 
   // remove(id: number) {
