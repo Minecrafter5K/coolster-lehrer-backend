@@ -73,20 +73,19 @@ describe('LehrerService', () => {
       const result = await service.findOne(1);
       expect(result).toHaveProperty('id');
       expect(result).toHaveProperty('name');
-      expect(result).toHaveProperty('coolness');
     });
   });
 
   describe('create', () => {
     it('should return null', async () => {
-      const result = await service.create({ name: 'test', coolness: 1 });
+      const result = await service.create({ name: 'test' });
       expect(result).toBeNull();
     });
   });
 
   describe('update', () => {
     it('should return null', async () => {
-      const result = await service.update(1, { name: 'test', coolness: 1 });
+      const result = await service.update(1, { name: 'test' });
       expect(result).toBeNull();
     });
   });

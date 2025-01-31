@@ -58,12 +58,10 @@ describe('LehrerController', () => {
 
       await controller.create({
         name: 'Max',
-        coolness: 10,
       });
 
       expect(spy).toHaveBeenCalledWith({
         name: 'Max',
-        coolness: 10,
       });
     });
   });
@@ -94,21 +92,19 @@ describe('LehrerController', () => {
 
       await controller.update('1', {
         name: 'Max',
-        coolness: 10,
       });
 
       expect(spy).toHaveBeenCalledWith(1, {
         name: 'Max',
-        coolness: 10,
       });
     });
   });
 
   describe('remove', () => {
-    it('should call remove of service', () => {
+    it('should call remove of service', async () => {
       const spy = jest.spyOn(controller['lehrerService'], 'remove');
 
-      controller.remove('1');
+      await controller.remove('1');
 
       expect(spy).toHaveBeenCalledWith(1);
     });
