@@ -2,6 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { CreateVoteDto } from './dto/create-vote.dto';
 import { drizzle, MySql2Database } from 'drizzle-orm/mysql2';
 import { lehrerTable, voteTable } from '../db/schema';
+import { LehrerWithScore } from './entities/lehrerWithScore.entity';
 
 @Injectable()
 export class VotesService {
@@ -26,7 +27,7 @@ export class VotesService {
     return this.db.select().from(voteTable);
   }
 
-  async rank() {
+  async rank(): Promise<LehrerWithScore[]> {
     const lehrer = await this.db.select().from(lehrerTable);
     const votes = await this.db.select().from(voteTable);
 
@@ -45,7 +46,15 @@ export class VotesService {
       };
     });
 
-    return mappedLehrer.sort((a, b) => b.score - a.score);
+    mappedLehrer.sort((a, b) => b.score - a.score);
+
+    // add rank to mappedLehrer array
+    return mappedLehrer.map((l, index) => {
+      return {
+        ...l,
+        rank: index + 1,
+      };
+    });
   }
 
   // remove(id: number) {
