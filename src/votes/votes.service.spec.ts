@@ -5,7 +5,7 @@ import { MySqlContainer, StartedMySqlContainer } from '@testcontainers/mysql';
 import { drizzle, MySql2Database } from 'drizzle-orm/mysql2';
 import { migrate } from 'drizzle-orm/mysql2/migrator';
 import { reset, seed } from 'drizzle-seed';
-import { lehrerTable, voteTable } from '../db/schema';
+import { lehrerTable, voteTable, abstimmungenTable } from '../db/schema';
 
 const SECONDS = 1000;
 jest.setTimeout(70 * SECONDS);
@@ -60,13 +60,17 @@ describe('VotesService', () => {
 
   describe('create', () => {
     it('should return null', async () => {
-      const result = await service.create({ lehrerId: 1, vote: 0 });
+      const result = await service.create({
+        lehrerId: 1,
+        vote: 0,
+        abstimmungId: 1,
+      });
       expect(result).toBeNull();
     });
     it('should create vote in DB', async () => {
       await reset(db, { voteTable });
 
-      await service.create({ lehrerId: 109, vote: 0 });
+      await service.create({ lehrerId: 109, vote: 0, abstimmungId: 1 });
 
       const votes = await db.select().from(voteTable);
       expect(votes).toEqual([
@@ -74,26 +78,31 @@ describe('VotesService', () => {
           id: 1,
           lehrerId: 109,
           vote: 0,
+          abstimmungId: 1,
         },
       ]);
     });
     it('should insert data into DB', async () => {
       await reset(db, { voteTable });
 
-      await service.create({ lehrerId: 109, vote: 0 });
+      await service.create({ lehrerId: 109, vote: 0, abstimmungId: 1 });
 
       const votes = await db.select().from(voteTable);
-      expect(votes).toEqual([{ id: 1, lehrerId: 109, vote: 0 }]);
+      expect(votes).toEqual([
+        { id: 1, lehrerId: 109, vote: 0, abstimmungId: 1 },
+      ]);
     });
   });
 
   describe('bulkCreate', () => {
     it('should return number of inserted rows', async () => {
-      const result1 = await service.bulkCreate([{ lehrerId: 1, vote: 0 }]);
+      const result1 = await service.bulkCreate([
+        { lehrerId: 1, vote: 0, abstimmungId: 1 },
+      ]);
       expect(result1).toBe(1);
       const result2 = await service.bulkCreate([
-        { lehrerId: 1, vote: 0 },
-        { lehrerId: 2, vote: 1 },
+        { lehrerId: 1, vote: 0, abstimmungId: 1 },
+        { lehrerId: 2, vote: 1, abstimmungId: 1 },
       ]);
       expect(result2).toBe(2);
     });
@@ -101,8 +110,8 @@ describe('VotesService', () => {
       await reset(db, { voteTable });
 
       const data = [
-        { lehrerId: 1, vote: 0 },
-        { lehrerId: 2, vote: 1 },
+        { lehrerId: 1, vote: 0, abstimmungId: 1 },
+        { lehrerId: 2, vote: 1, abstimmungId: 1 },
       ];
 
       await service.bulkCreate(data);
@@ -114,7 +123,7 @@ describe('VotesService', () => {
 
   describe('rank', () => {
     it('should return all lehrer', async () => {
-      const result = await service.rank();
+      const result = await service.rank(1);
       const expectedLehrer = await db.select().from(lehrerTable);
 
       expect(result).toHaveLength(expectedLehrer.length);
@@ -124,15 +133,24 @@ describe('VotesService', () => {
       await reset(db, { voteTable });
       await seed(db, { lehrerTable });
       await db.insert(voteTable).values([
-        { lehrerId: 2, vote: 0 },
-        { lehrerId: 2, vote: 1 },
-        { lehrerId: 3, vote: 1 },
-        { lehrerId: 1, vote: -1 },
+        { lehrerId: 2, vote: 0, abstimmungId: 1 },
+        { lehrerId: 2, vote: 1, abstimmungId: 1 },
+        { lehrerId: 3, vote: 1, abstimmungId: 1 },
+        { lehrerId: 1, vote: -1, abstimmungId: 1 },
       ]);
 
-      const result = await service.rank();
+      const result = await service.rank(1);
       const orderedResult = [...result].sort((a, b) => b.score - a.score);
       expect(result).toEqual(orderedResult);
+    });
+  });
+
+  describe('currentUmfrage', () => {
+    it('should return current umfrage', async () => {
+      await seed(db, { abstimmungenTable });
+      const result = await service.currentUmfrage();
+
+      expect(result).toBeDefined();
     });
   });
 });

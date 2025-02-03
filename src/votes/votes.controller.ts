@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param } from '@nestjs/common';
 import { VotesService } from './votes.service';
 import { CreateVoteDto } from './dto/create-vote.dto';
 
@@ -21,9 +21,14 @@ export class VotesController {
     return this.votesService.findAll();
   }
 
-  @Get('rank')
-  rank() {
-    return this.votesService.rank();
+  @Get('rank/:id')
+  rank(@Param('id') id: number) {
+    return this.votesService.rank(id);
+  }
+
+  @Get('currentUmfrage')
+  currentUmfrage() {
+    return this.votesService.currentUmfrage();
   }
 
   // @Delete(':id')

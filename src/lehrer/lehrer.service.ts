@@ -28,8 +28,8 @@ export class LehrerService implements LehrerService {
       .select()
       .from(lehrerTable)
       .where(eq(lehrerTable.id, id))
-      .limit(1)
-      .execute();
+      .limit(1);
+
     return lehrer[0];
   }
 

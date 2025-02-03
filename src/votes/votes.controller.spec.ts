@@ -6,7 +6,7 @@ import { MySqlContainer, StartedMySqlContainer } from '@testcontainers/mysql';
 import { drizzle, MySql2Database } from 'drizzle-orm/mysql2';
 import { migrate } from 'drizzle-orm/mysql2/migrator';
 import { reset, seed } from 'drizzle-seed';
-import { voteTable } from '../db/schema';
+import { abstimmungenTable, voteTable } from '../db/schema';
 
 const SECONDS = 1000;
 jest.setTimeout(70 * SECONDS);
@@ -60,11 +60,13 @@ describe('VotesController', () => {
       await controller.create({
         lehrerId: 1,
         vote: 0,
+        abstimmungId: 1,
       });
 
       expect(spy).toBeCalledWith({
         lehrerId: 1,
         vote: 0,
+        abstimmungId: 1,
       });
     });
   });
@@ -74,13 +76,13 @@ describe('VotesController', () => {
       const spy = jest.spyOn(controller['votesService'], 'bulkCreate');
 
       await controller.bulkCreate([
-        { lehrerId: 1, vote: 0 },
-        { lehrerId: 2, vote: 1 },
+        { lehrerId: 1, vote: 0, abstimmungId: 1 },
+        { lehrerId: 2, vote: 1, abstimmungId: 1 },
       ]);
 
       expect(spy).toBeCalledWith([
-        { lehrerId: 1, vote: 0 },
-        { lehrerId: 2, vote: 1 },
+        { lehrerId: 1, vote: 0, abstimmungId: 1 },
+        { lehrerId: 2, vote: 1, abstimmungId: 1 },
       ]);
     });
   });
@@ -99,7 +101,20 @@ describe('VotesController', () => {
     it('should call rank of service', async () => {
       const spy = jest.spyOn(controller['votesService'], 'rank');
 
-      await controller.rank();
+      await controller.rank(1);
+
+      expect(spy).toBeCalled();
+    });
+  });
+
+  describe('currentUmfrage', () => {
+    it('should call currentUmfrage of service', async () => {
+      await db.insert(abstimmungenTable).values({
+        name: 'Test',
+      });
+      const spy = jest.spyOn(controller['votesService'], 'currentUmfrage');
+
+      await controller.currentUmfrage();
 
       expect(spy).toBeCalled();
     });
