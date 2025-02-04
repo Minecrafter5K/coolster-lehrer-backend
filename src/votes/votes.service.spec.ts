@@ -145,11 +145,18 @@ describe('VotesService', () => {
     });
   });
 
-  describe('currentUmfrage', () => {
-    it('should return current umfrage', async () => {
+  describe('currentAbstimmung', () => {
+    it('should return current abstimmung', async () => {
       await seed(db, { abstimmungenTable });
-      const result = await service.currentUmfrage();
+      const result = await service.currentAbstimmung();
 
+      expect(result).toBeDefined();
+    });
+  });
+
+  describe('abstimmungen', () => {
+    it('should return all abstimmungen', async () => {
+      const result = await service.abstimmungen();
       expect(result).toBeDefined();
     });
   });

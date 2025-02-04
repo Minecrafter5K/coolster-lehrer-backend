@@ -26,9 +26,14 @@ export class VotesController {
     return this.votesService.rank(id);
   }
 
-  @Get('currentUmfrage')
-  currentUmfrage() {
-    return this.votesService.currentUmfrage();
+  @Get('currentAbstimmung')
+  currentAbstimmung() {
+    return this.votesService.currentAbstimmung();
+  }
+
+  @Get('abstimmungen')
+  abstimmungen() {
+    return this.votesService.abstimmungen();
   }
 
   // @Delete(':id')

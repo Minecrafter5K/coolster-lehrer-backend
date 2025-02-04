@@ -107,14 +107,24 @@ describe('VotesController', () => {
     });
   });
 
-  describe('currentUmfrage', () => {
-    it('should call currentUmfrage of service', async () => {
+  describe('currentAbstimmung', () => {
+    it('should call currentAbstimmung of service', async () => {
       await db.insert(abstimmungenTable).values({
         name: 'Test',
       });
-      const spy = jest.spyOn(controller['votesService'], 'currentUmfrage');
+      const spy = jest.spyOn(controller['votesService'], 'currentAbstimmung');
 
-      await controller.currentUmfrage();
+      await controller.currentAbstimmung();
+
+      expect(spy).toBeCalled();
+    });
+  });
+
+  describe('abstimmungen', () => {
+    it('should call abstimmungen of service', async () => {
+      const spy = jest.spyOn(controller['votesService'], 'abstimmungen');
+
+      await controller.abstimmungen();
 
       expect(spy).toBeCalled();
     });

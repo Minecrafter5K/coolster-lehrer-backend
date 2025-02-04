@@ -65,7 +65,7 @@ export class VotesService {
       });
   }
 
-  async currentUmfrage(): Promise<number> {
+  async currentAbstimmung(): Promise<number> {
     const result = await this.db
       .select()
       .from(abstimmungenTable)
@@ -73,6 +73,10 @@ export class VotesService {
       .limit(1);
 
     return result[0].id;
+  }
+
+  async abstimmungen() {
+    return this.db.select().from(abstimmungenTable);
   }
 
   // remove(id: number) {
