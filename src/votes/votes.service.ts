@@ -79,6 +79,25 @@ export class VotesService {
     return this.db.select().from(abstimmungenTable);
   }
 
+  async getAbstimmungDetails(abstimmung_id: number) {
+    const result = await this.db
+      .select({
+        id: abstimmungenTable.id,
+        name: abstimmungenTable.name,
+        winner: {
+          id: lehrerTable.id,
+          name: lehrerTable.name,
+        },
+      })
+      .from(abstimmungenTable)
+      .leftJoin(voteTable, eq(abstimmungenTable.id, voteTable.abstimmungId))
+      .leftJoin(lehrerTable, eq(voteTable.lehrerId, lehrerTable.id))
+      .where(eq(abstimmungenTable.id, abstimmung_id))
+      .limit(1);
+
+    return result[0];
+  }
+
   // remove(id: number) {
   //   return `This action removes a #${id} vote`;
   // }
