@@ -75,25 +75,4 @@ describe('LehrerService', () => {
       expect(result).toHaveProperty('name');
     });
   });
-
-  describe('create', () => {
-    it('should return null', async () => {
-      const result = await service.create({ name: 'test' });
-      expect(result).toBeNull();
-    });
-  });
-
-  describe('update', () => {
-    it('should return null', async () => {
-      const result = await service.update(1, { name: 'test' });
-      expect(result).toBeNull();
-    });
-  });
-
-  describe('remove', () => {
-    it('should return null', async () => {
-      const result = await service.remove(1);
-      expect(result).toBeNull();
-    });
-  });
 });
