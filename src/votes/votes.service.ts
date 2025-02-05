@@ -4,7 +4,7 @@ import { drizzle, MySql2Database } from 'drizzle-orm/mysql2';
 import { abstimmungenTable, lehrerTable, voteTable } from '../db/schema';
 import { LehrerWithScore } from './entities/lehrerWithScore.entity';
 import { eq, desc } from 'drizzle-orm';
-import { AbstimmungDetail } from './entities/abstimmung.entity';
+import { Abstimmung, AbstimmungDetail } from './entities/abstimmung.entity';
 
 @Injectable()
 export class VotesService {
@@ -66,14 +66,14 @@ export class VotesService {
       });
   }
 
-  async currentAbstimmung(): Promise<number> {
+  async currentAbstimmung(): Promise<Abstimmung> {
     const result = await this.db
       .select()
       .from(abstimmungenTable)
       .orderBy(desc(abstimmungenTable.id))
       .limit(1);
 
-    return result[0].id;
+    return result[0];
   }
 
   async abstimmungen() {
