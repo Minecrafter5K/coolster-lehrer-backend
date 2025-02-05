@@ -79,23 +79,20 @@ export class VotesService {
     return this.db.select().from(abstimmungenTable);
   }
 
-  async getAbstimmungDetails(abstimmung_id: number) {
-    const result = await this.db
-      .select({
-        id: abstimmungenTable.id,
-        name: abstimmungenTable.name,
-        winner: {
-          id: lehrerTable.id,
-          name: lehrerTable.name,
-        },
-      })
-      .from(abstimmungenTable)
-      .leftJoin(voteTable, eq(abstimmungenTable.id, voteTable.abstimmungId))
-      .leftJoin(lehrerTable, eq(voteTable.lehrerId, lehrerTable.id))
-      .where(eq(abstimmungenTable.id, abstimmung_id))
-      .limit(1);
+  async getAbstimmungenDetail() {
+    const abstimmungen = await this.db.select().from(abstimmungenTable);
 
-    return result[0];
+    return await Promise.all(
+      abstimmungen.map(async (a) => {
+        const lehrer = await this.rank(a.id);
+
+        return {
+          id: a.id,
+          name: a.name,
+          winner: lehrer[0],
+        };
+      }),
+    );
   }
 
   // remove(id: number) {

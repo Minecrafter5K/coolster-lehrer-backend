@@ -36,9 +36,9 @@ export class VotesController {
     return this.votesService.abstimmungen();
   }
 
-  @Get('abstimmung/:id')
-  abstimmung(@Param('id') id: number) {
-    return this.votesService.getAbstimmungDetails(id);
+  @Get('abstimmungen/detail')
+  abstimmungenDetail() {
+    return this.votesService.getAbstimmungenDetail();
   }
 
   // @Delete(':id')

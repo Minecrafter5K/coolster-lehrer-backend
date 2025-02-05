@@ -130,16 +130,16 @@ describe('VotesController', () => {
     });
   });
 
-  describe('abstimmung', () => {
-    it('should call getAbstimmungDetails of service', async () => {
+  describe('abstimmungenDetail', () => {
+    it('should call getAbstimmungenDetail of service', async () => {
       const spy = jest.spyOn(
         controller['votesService'],
-        'getAbstimmungDetails',
+        'getAbstimmungenDetail',
       );
 
-      await controller.abstimmung(1);
+      await controller.abstimmungenDetail();
 
-      expect(spy).toBeCalledWith(1);
+      expect(spy).toHaveBeenCalledTimes(1);
     });
   });
 });
