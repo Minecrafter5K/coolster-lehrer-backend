@@ -6,6 +6,7 @@ import { migrate } from 'drizzle-orm/mysql2/migrator';
 import { reset, seed } from 'drizzle-seed';
 import { lehrerTable, voteTable, abstimmungenTable } from '../db/schema';
 import { AdminService } from './admin.service';
+import { CreateAbstimmungDto } from './dto/create-abstimmung.dto';
 
 const SECONDS = 1000;
 jest.setTimeout(70 * SECONDS);
@@ -53,7 +54,11 @@ describe('AdminService', () => {
 
   describe('createAbstimmung', () => {
     it('should create a new abstimmung', async () => {
-      const abstimmung = { name: 'test abstimmung' };
+      const abstimmung: CreateAbstimmungDto = {
+        name: 'test abstimmung',
+        status: 'running',
+        endDate: new Date(),
+      };
 
       await service.createAbstimmung(abstimmung);
 

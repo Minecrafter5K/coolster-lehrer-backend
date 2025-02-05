@@ -15,6 +15,13 @@
       "when": 1738580687921,
       "tag": "0001_slimy_morlocks",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1738748123039,
+      "tag": "0002_mushy_steve_rogers",
+      "breakpoints": true
     }
   ]
 }

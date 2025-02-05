@@ -4,6 +4,7 @@ import { drizzle, MySql2Database } from 'drizzle-orm/mysql2';
 import { abstimmungenTable, lehrerTable, voteTable } from '../db/schema';
 import { LehrerWithScore } from './entities/lehrerWithScore.entity';
 import { eq, desc } from 'drizzle-orm';
+import { AbstimmungDetail } from './entities/abstimmung.entity';
 
 @Injectable()
 export class VotesService {
@@ -79,7 +80,7 @@ export class VotesService {
     return this.db.select().from(abstimmungenTable);
   }
 
-  async getAbstimmungenDetail() {
+  async getAbstimmungenDetail(): Promise<AbstimmungDetail[]> {
     const abstimmungen = await this.db.select().from(abstimmungenTable);
 
     return await Promise.all(
@@ -89,6 +90,8 @@ export class VotesService {
         return {
           id: a.id,
           name: a.name,
+          status: a.status,
+          endDate: a.endDate,
           winner: lehrer[0],
         };
       }),
