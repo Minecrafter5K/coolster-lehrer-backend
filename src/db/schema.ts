@@ -1,6 +1,5 @@
 import {
   int,
-  mysqlEnum,
   mysqlTable,
   serial,
   timestamp,
@@ -22,6 +21,6 @@ export const voteTable = mysqlTable('vote_table', {
 export const abstimmungenTable = mysqlTable('abstimmungen_table', {
   id: serial('id').primaryKey(),
   name: varchar('name', { length: 255 }).notNull(),
-  status: mysqlEnum('status', ['running', 'finished']).notNull(),
+  startDate: timestamp('start_date').notNull(),
   endDate: timestamp('end_date').notNull(),
 });

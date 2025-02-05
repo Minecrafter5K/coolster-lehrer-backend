@@ -56,7 +56,7 @@ describe('AdminService', () => {
     it('should create a new abstimmung', async () => {
       const abstimmung: CreateAbstimmungDto = {
         name: 'test abstimmung',
-        status: 'running',
+        startDate: new Date(),
         endDate: new Date(),
       };
 

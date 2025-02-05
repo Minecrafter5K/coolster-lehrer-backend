@@ -59,7 +59,7 @@ describe('AdminController', () => {
 
       await controller.createAbstimmung({
         name: 'Test',
-        status: 'running',
+        startDate: new Date(),
         endDate: new Date(),
       });
 
@@ -107,7 +107,7 @@ describe('AdminController', () => {
 
       await controller.updateAbstimmung('1', {
         name: 'Test',
-        status: 'running',
+        startDate: new Date(),
         endDate: new Date(),
       });
 

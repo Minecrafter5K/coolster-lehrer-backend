@@ -111,7 +111,7 @@ describe('VotesController', () => {
     it('should call currentAbstimmung of service', async () => {
       await db.insert(abstimmungenTable).values({
         name: 'Test',
-        status: 'running',
+        startDate: new Date(),
         endDate: new Date(),
       });
       const spy = jest.spyOn(controller['votesService'], 'currentAbstimmung');

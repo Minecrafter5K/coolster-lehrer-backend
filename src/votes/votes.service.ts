@@ -90,7 +90,7 @@ export class VotesService {
         return {
           id: a.id,
           name: a.name,
-          status: a.status,
+          startDate: a.startDate,
           endDate: a.endDate,
           winner: lehrer[0],
         };
