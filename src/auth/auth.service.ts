@@ -1,12 +1,13 @@
 import { Injectable, BadRequestException } from '@nestjs/common';
+import { sign } from 'jsonwebtoken';
 import {
   generateRegistrationOptions as generateRegistrationOpts,
   verifyRegistrationResponse as verifyRegistrationRes,
   generateAuthenticationOptions as generateAuthenticationOpts,
   verifyAuthenticationResponse as verifyAuthenticationRes,
   GenerateRegistrationOptionsOpts,
-  VerifyRegistrationResponseOpts,
   GenerateAuthenticationOptionsOpts,
+  VerifyRegistrationResponseOpts,
   VerifyAuthenticationResponseOpts,
   RegistrationResponseJSON,
   AuthenticationResponseJSON,
@@ -15,7 +16,6 @@ import {
   WebAuthnCredential,
 } from '@simplewebauthn/server';
 
-// In a real application these would be stored in a database or session store.
 interface User {
   id: string;
   username: string;
@@ -25,11 +25,13 @@ interface User {
 
 @Injectable()
 export class AuthService {
-  // A simple in-memory user "database"
+  // In-memory user "database". Replace with your persistent storage in production.
   private users: Map<string, User> = new Map();
 
+  private jwtSecret = process.env.JWT_SECRET || 'your-secret-key';
+
   constructor() {
-    // For demonstration, seed a single user.
+    // Seed a user for demonstration
     const userId = 'internalUserId';
     this.users.set(userId, {
       id: userId,
@@ -38,10 +40,6 @@ export class AuthService {
     });
   }
 
-  /**
-   * Generate registration options.
-   * In a real-world app you should bind the challenge to the user session.
-   */
   async generateRegistrationOptions(userId: string) {
     const user = this.users.get(userId);
     if (!user) {
@@ -50,11 +48,10 @@ export class AuthService {
 
     const opts: GenerateRegistrationOptionsOpts = {
       rpName: 'SimpleWebAuthn Example',
-      rpID: 'localhost', // Adjust for your domain
+      rpID: 'localhost',
       userName: user.username,
       timeout: 60000,
       attestationType: 'none',
-      // Prevent re-registration of the same authenticator
       excludeCredentials: user.credentials.map((cred) => ({
         id: cred.id,
         type: 'public-key',
@@ -68,15 +65,10 @@ export class AuthService {
     };
 
     const options = await generateRegistrationOpts(opts);
-    // Save challenge with the user so it can be retrieved during verification
     user.currentChallenge = options.challenge;
-    // In production, you might store this in a session or a persistent DB
     return options;
   }
 
-  /**
-   * Verify registration response.
-   */
   async verifyRegistrationResponse(
     userId: string,
     body: RegistrationResponseJSON,
@@ -89,9 +81,8 @@ export class AuthService {
     const opts: VerifyRegistrationResponseOpts = {
       response: body,
       expectedChallenge: `${user.currentChallenge}`,
-      // expectedOrigin would normally be determined by your environment (e.g. 'http://localhost:8000')
       expectedOrigin: 'http://localhost:5173',
-      expectedRPID: 'localhost', // Adjust as needed
+      expectedRPID: 'localhost',
       requireUserVerification: false,
     };
 
@@ -104,27 +95,27 @@ export class AuthService {
 
     if (verification.verified && verification.registrationInfo) {
       const { credential } = verification.registrationInfo;
-      // Add the new credential if it's not already registered
       if (!user.credentials.find((cred) => cred.id === credential.id)) {
         const newCredential: WebAuthnCredential = {
           id: credential.id,
           publicKey: credential.publicKey,
           counter: credential.counter,
-          // In a real-world setup, the transports information should come from response
           transports: body.response.transports,
         };
         user.credentials.push(newCredential);
       }
     }
 
-    // Clear the challenge after verification
     user.currentChallenge = undefined;
-    return verification;
+
+    const jwt = sign(
+      { userId: user.id, username: user.username },
+      this.jwtSecret,
+      { expiresIn: '1h' },
+    );
+    return { verification, token: jwt };
   }
 
-  /**
-   * Generate authentication options.
-   */
   async generateAuthenticationOptions(userId: string) {
     const user = this.users.get(userId);
     if (!user) {
@@ -139,18 +130,14 @@ export class AuthService {
         transports: cred.transports,
       })),
       userVerification: 'preferred',
-      rpID: 'localhost', // Adjust for your domain
+      rpID: 'localhost',
     };
 
     const options = await generateAuthenticationOpts(opts);
-    // Save the challenge to verify later
     user.currentChallenge = options.challenge;
     return options;
   }
 
-  /**
-   * Verify authentication response.
-   */
   async verifyAuthenticationResponse(
     userId: string,
     body: AuthenticationResponseJSON,
@@ -160,7 +147,6 @@ export class AuthService {
       throw new BadRequestException('No challenge found for the user');
     }
 
-    // Retrieve the credential used for the authentication
     const dbCredential = user.credentials.find((cred) => cred.id === body.id);
     if (!dbCredential) {
       throw new BadRequestException(
@@ -171,7 +157,7 @@ export class AuthService {
     const opts: VerifyAuthenticationResponseOpts = {
       response: body,
       expectedChallenge: `${user.currentChallenge}`,
-      expectedOrigin: 'http://localhost:5173', // Adjust to your expected origin
+      expectedOrigin: 'http://localhost:5173',
       expectedRPID: 'localhost',
       credential: dbCredential,
       requireUserVerification: false,
@@ -185,11 +171,15 @@ export class AuthService {
     }
 
     if (verification.verified) {
-      // Update the counter to avoid replay attacks
       dbCredential.counter = verification.authenticationInfo.newCounter;
     }
 
     user.currentChallenge = undefined;
-    return verification;
+    const jwt = sign(
+      { userId: user.id, username: user.username },
+      this.jwtSecret,
+      { expiresIn: '1h' },
+    );
+    return { verified: verification.verified, token: jwt };
   }
 }
