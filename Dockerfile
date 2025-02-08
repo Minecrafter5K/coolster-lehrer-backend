@@ -9,7 +9,7 @@ COPY . .
 
 # Install dependencies and build
 RUN npm i
-RUN npm run build
+RUN npm run build:bundled
 
 # RUNNER
 FROM base AS runner
@@ -25,4 +25,4 @@ COPY --from=builder --chown=nodejs:nodejs /app/dist ./
 
 EXPOSE 3001
 
-CMD ["node", "./src/main.js"]
+CMD ["node", "./index.js"]
