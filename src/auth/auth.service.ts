@@ -69,8 +69,8 @@ export class AuthService {
       .where(eq(passkeyTable.user_id, userId!));
 
     const opts: GenerateRegistrationOptionsOpts = {
-      rpName: 'SimpleWebAuthn Example',
-      rpID: 'localhost',
+      rpName: 'Coolster Lehrer',
+      rpID: process.env.RP_ID || 'localhost',
       userName: user.username,
       timeout: 60000,
       attestationType: 'none',
@@ -113,8 +113,8 @@ export class AuthService {
     const opts: VerifyRegistrationResponseOpts = {
       response: body,
       expectedChallenge: `${user.currentChallenge}`,
-      expectedOrigin: 'http://localhost:5173',
-      expectedRPID: 'localhost',
+      expectedOrigin: process.env.FRONTEND_URL || 'http://localhost:5173',
+      expectedRPID: process.env.RP_ID || 'localhost',
       requireUserVerification: false,
     };
 
@@ -211,7 +211,7 @@ export class AuthService {
         transports: JSON.parse(pk.transports),
       })),
       userVerification: 'preferred',
-      rpID: 'localhost',
+      rpID: process.env.RP_ID || 'localhost',
     };
 
     const options = await generateAuthenticationOpts(opts);
@@ -251,8 +251,8 @@ export class AuthService {
     const opts: VerifyAuthenticationResponseOpts = {
       response: body,
       expectedChallenge: `${user.currentChallenge}`,
-      expectedOrigin: 'http://localhost:5173',
-      expectedRPID: 'localhost',
+      expectedOrigin: process.env.FRONTEND_URL || 'http://localhost:5173',
+      expectedRPID: process.env.RP_ID || 'localhost',
       credential: {
         id: dbPasskey.cred_id,
         publicKey: dbPasskey.cred_public_key,
