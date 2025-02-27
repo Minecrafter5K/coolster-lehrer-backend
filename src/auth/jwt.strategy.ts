@@ -15,7 +15,6 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       // Extract token from cookies. The cookie-parser middleware must be applied first.
       jwtFromRequest: ExtractJwt.fromExtractors([
         (req: Request) => {
-          console.log('JWT Strategy, req:', req.cookies);
           let token: string | null = null;
           if (req && req.cookies && typeof req.cookies['jwt'] === 'string') {
             token = req.cookies['jwt'];

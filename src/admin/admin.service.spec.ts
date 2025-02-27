@@ -3,10 +3,11 @@ import { Provider } from '@nestjs/common';
 import { MySqlContainer, StartedMySqlContainer } from '@testcontainers/mysql';
 import { drizzle, MySql2Database } from 'drizzle-orm/mysql2';
 import { migrate } from 'drizzle-orm/mysql2/migrator';
-import { reset, seed } from 'drizzle-seed';
-import { lehrerTable, voteTable, abstimmungenTable } from '../db/schema';
 import { AdminService } from './admin.service';
 import { CreateAbstimmungDto } from './dto/create-abstimmung.dto';
+
+import seedDb from '../utils/seed';
+import { abstimmungenTable, lehrerTable } from '../db/schema';
 
 const SECONDS = 1000;
 jest.setTimeout(70 * SECONDS);
@@ -38,8 +39,7 @@ describe('AdminService', () => {
   });
 
   beforeEach(async () => {
-    await reset(db, { lehrerTable, voteTable, abstimmungenTable });
-    await seed(db, { lehrerTable, voteTable, abstimmungenTable });
+    await seedDb(db);
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [AdminService, urlProvider],

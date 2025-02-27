@@ -3,10 +3,9 @@ import { LehrerService } from './lehrer.service';
 import { MySqlContainer, StartedMySqlContainer } from '@testcontainers/mysql';
 import { Provider } from '@nestjs/common';
 import { drizzle, MySql2Database } from 'drizzle-orm/mysql2';
-import { reset, seed } from 'drizzle-seed';
-
-import { lehrerTable } from '../db/schema';
 import { migrate } from 'drizzle-orm/mysql2/migrator';
+
+import seedDb from '../utils/seed';
 
 const SECONDS = 1000;
 jest.setTimeout(70 * SECONDS);
@@ -38,8 +37,7 @@ describe('LehrerService', () => {
   });
 
   beforeEach(async () => {
-    await reset(db, { lehrerTable });
-    await seed(db, { lehrerTable });
+    await seedDb(db);
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [LehrerService, urlProvider],

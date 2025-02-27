@@ -37,12 +37,17 @@ export class AuthController {
   }
 
   @Post('generate-registration-options')
-  async generateRegistrationOptions(@Body() body: { userId: string }) {
-    const { userId } = body;
-    if (!userId) {
-      throw new BadRequestException('User ID is required');
+  async generateRegistrationOptions(
+    @Body() body: { userId?: string; username?: string },
+  ) {
+    const { userId, username } = body;
+    if (!userId && !username) {
+      throw new BadRequestException('Either userId or username is required');
     }
-    return await this.authService.generateRegistrationOptions(userId);
+    return await this.authService.generateRegistrationOptions({
+      userId,
+      username,
+    });
   }
 
   @Post('verify-registration')
@@ -73,12 +78,17 @@ export class AuthController {
   }
 
   @Post('generate-authentication-options')
-  async generateAuthenticationOptions(@Body() body: { userId: string }) {
-    const { userId } = body;
-    if (!userId) {
-      throw new BadRequestException('User ID is required');
+  async generateAuthenticationOptions(
+    @Body() body: { userId?: string; username?: string },
+  ) {
+    const { userId, username } = body;
+    if (!userId && !username) {
+      throw new BadRequestException('Either userId or username is required');
     }
-    return await this.authService.generateAuthenticationOptions(userId);
+    return await this.authService.generateAuthenticationOptions({
+      userId,
+      username,
+    });
   }
 
   @Post('verify-authentication')

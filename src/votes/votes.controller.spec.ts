@@ -5,8 +5,9 @@ import { Provider } from '@nestjs/common';
 import { MySqlContainer, StartedMySqlContainer } from '@testcontainers/mysql';
 import { drizzle, MySql2Database } from 'drizzle-orm/mysql2';
 import { migrate } from 'drizzle-orm/mysql2/migrator';
-import { reset, seed } from 'drizzle-seed';
-import { abstimmungenTable, voteTable } from '../db/schema';
+
+import seedDb from '../utils/seed';
+import { abstimmungenTable } from '../db/schema';
 
 const SECONDS = 1000;
 jest.setTimeout(70 * SECONDS);
@@ -38,8 +39,7 @@ describe('VotesController', () => {
   });
 
   beforeEach(async () => {
-    await reset(db, { voteTable });
-    await seed(db, { voteTable });
+    await seedDb(db);
 
     const module: TestingModule = await Test.createTestingModule({
       controllers: [VotesController],

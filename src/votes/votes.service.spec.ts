@@ -4,8 +4,9 @@ import { Provider } from '@nestjs/common';
 import { MySqlContainer, StartedMySqlContainer } from '@testcontainers/mysql';
 import { drizzle, MySql2Database } from 'drizzle-orm/mysql2';
 import { migrate } from 'drizzle-orm/mysql2/migrator';
-import { reset, seed } from 'drizzle-seed';
-import { lehrerTable, voteTable, abstimmungenTable } from '../db/schema';
+import { reset } from 'drizzle-seed';
+import seedDb from '../utils/seed';
+import { lehrerTable, voteTable } from '../db/schema';
 
 const SECONDS = 1000;
 jest.setTimeout(70 * SECONDS);
@@ -37,8 +38,7 @@ describe('VotesService', () => {
   });
 
   beforeEach(async () => {
-    await reset(db, { voteTable });
-    await seed(db, { voteTable });
+    await seedDb(db);
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [VotesService, urlProvider],
@@ -70,26 +70,16 @@ describe('VotesService', () => {
     it('should create vote in DB', async () => {
       await reset(db, { voteTable });
 
-      await service.create({ lehrerId: 109, vote: 0, abstimmungId: 1 });
+      await service.create({ lehrerId: 2, vote: 0, abstimmungId: 1 });
 
       const votes = await db.select().from(voteTable);
       expect(votes).toEqual([
         {
           id: 1,
-          lehrerId: 109,
+          lehrerId: 2,
           vote: 0,
           abstimmungId: 1,
         },
-      ]);
-    });
-    it('should insert data into DB', async () => {
-      await reset(db, { voteTable });
-
-      await service.create({ lehrerId: 109, vote: 0, abstimmungId: 1 });
-
-      const votes = await db.select().from(voteTable);
-      expect(votes).toEqual([
-        { id: 1, lehrerId: 109, vote: 0, abstimmungId: 1 },
       ]);
     });
   });
@@ -131,7 +121,6 @@ describe('VotesService', () => {
 
     it('should return ordered by votes', async () => {
       await reset(db, { voteTable });
-      await seed(db, { lehrerTable });
       await db.insert(voteTable).values([
         { lehrerId: 2, vote: 0, abstimmungId: 1 },
         { lehrerId: 2, vote: 1, abstimmungId: 1 },
@@ -147,7 +136,7 @@ describe('VotesService', () => {
 
   describe('currentAbstimmung', () => {
     it('should return current abstimmung', async () => {
-      await seed(db, { abstimmungenTable });
+      await seedDb(db);
       const result = await service.currentAbstimmung();
 
       expect(result).toBeDefined();

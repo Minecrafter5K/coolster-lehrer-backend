@@ -3,10 +3,10 @@ import { Provider } from '@nestjs/common';
 import { MySqlContainer, StartedMySqlContainer } from '@testcontainers/mysql';
 import { drizzle, MySql2Database } from 'drizzle-orm/mysql2';
 import { migrate } from 'drizzle-orm/mysql2/migrator';
-import { reset, seed } from 'drizzle-seed';
-import { voteTable } from '../db/schema';
 import { AdminController } from './admin.controller';
 import { AdminService } from './admin.service';
+
+import seedDb from '../utils/seed';
 
 const SECONDS = 1000;
 jest.setTimeout(70 * SECONDS);
@@ -38,8 +38,7 @@ describe('AdminController', () => {
   });
 
   beforeEach(async () => {
-    await reset(db, { voteTable });
-    await seed(db, { voteTable });
+    await seedDb(db);
 
     const module: TestingModule = await Test.createTestingModule({
       controllers: [AdminController],
