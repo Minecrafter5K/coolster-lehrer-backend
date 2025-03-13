@@ -92,7 +92,7 @@ export class AuthService {
       .update(userTable)
       .set({ currentChallenge: options.challenge })
       .where(eq(userTable.id, userId!));
-    return { opts: options, userId };
+    return { opts: options, userId, username: user.username };
   }
 
   // Nach erfolgreicher Registrierung: Speichere den Passkey in der passkeyTable
@@ -219,7 +219,7 @@ export class AuthService {
       .update(userTable)
       .set({ currentChallenge: options.challenge })
       .where(eq(userTable.id, userId));
-    return { opts: options, userId };
+    return { opts: options, userId, username: user.username };
   }
 
   // Verifiziere die Authentifizierungsantwort und aktualisiere den Passkey-Counter in der passkeyTable

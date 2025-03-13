@@ -68,6 +68,6 @@ export const passkeyTable = mysqlTable('passkey_table', {
 
 export const userTable = mysqlTable('user_table', {
   id: varchar('id', { length: 255 }).primaryKey(),
-  username: varchar('username', { length: 255 }).notNull(),
+  username: varchar('username', { length: 255 }).notNull().unique(),
   currentChallenge: varchar('current_challenge', { length: 255 }),
 });

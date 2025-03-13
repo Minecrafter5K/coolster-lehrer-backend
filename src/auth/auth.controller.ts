@@ -6,6 +6,7 @@ import {
   Res,
   UseGuards,
   Get,
+  Req,
 } from '@nestjs/common';
 import { Response } from 'express';
 import { AuthService } from './auth.service';
@@ -21,8 +22,13 @@ export class AuthController {
 
   @UseGuards(JwtAuthGuard)
   @Get('ping')
-  ping() {
-    return { msg: 'pong' };
+  ping(@Req() req: { user: { userId: string; username: string } }) {
+    return {
+      user: {
+        userId: req.user.userId,
+        username: req.user.username,
+      },
+    };
   }
 
   @Post('logout')
