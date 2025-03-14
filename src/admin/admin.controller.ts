@@ -3,6 +3,7 @@ import { AdminService } from './admin.service';
 import { CreateAbstimmungDto } from './dto/create-abstimmung.dto';
 import { CreateLehrerDto } from './dto/create-lehrer.dto';
 import { UpdateLehrerDto } from './dto/update-lehrer.dto';
+import { UpdateAbstimmungDto } from './dto/update-abstimmung.dto';
 
 @Controller('admin')
 export class AdminController {
@@ -31,7 +32,7 @@ export class AdminController {
   @Patch('abstimmung/:id')
   updateAbstimmung(
     @Param('id') id: string,
-    @Body() updateAbstimmungDto: CreateAbstimmungDto,
+    @Body() updateAbstimmungDto: UpdateAbstimmungDto,
   ) {
     return this.adminService.updateAbstimmung(+id, updateAbstimmungDto);
   }

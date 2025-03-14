@@ -7,7 +7,6 @@ import { drizzle, MySql2Database } from 'drizzle-orm/mysql2';
 import { migrate } from 'drizzle-orm/mysql2/migrator';
 
 import seedDb from '../utils/seed';
-import { abstimmungenTable } from '../db/schema';
 
 const SECONDS = 1000;
 jest.setTimeout(70 * SECONDS);
@@ -109,11 +108,6 @@ describe('VotesController', () => {
 
   describe('currentAbstimmung', () => {
     it('should call currentAbstimmung of service', async () => {
-      await db.insert(abstimmungenTable).values({
-        name: 'Test',
-        startDate: new Date(),
-        endDate: new Date(),
-      });
       const spy = jest.spyOn(controller['votesService'], 'currentAbstimmung');
 
       await controller.currentAbstimmung();

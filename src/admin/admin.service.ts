@@ -5,6 +5,7 @@ import { abstimmungenTable, lehrerTable } from '../db/schema';
 import { eq } from 'drizzle-orm';
 import { CreateLehrerDto } from './dto/create-lehrer.dto';
 import { UpdateLehrerDto } from './dto/update-lehrer.dto';
+import { UpdateAbstimmungDto } from './dto/update-abstimmung.dto';
 
 @Injectable()
 export class AdminService {
@@ -39,7 +40,7 @@ export class AdminService {
     return null;
   }
 
-  async updateAbstimmung(id: number, updateAbstimmungDto: CreateAbstimmungDto) {
+  async updateAbstimmung(id: number, updateAbstimmungDto: UpdateAbstimmungDto) {
     await this.db
       .update(abstimmungenTable)
       .set(updateAbstimmungDto)

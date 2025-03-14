@@ -58,8 +58,8 @@ describe('AdminController', () => {
 
       await controller.createAbstimmung({
         name: 'Test',
-        startDate: new Date(),
-        endDate: new Date(),
+        startDate: '2021-10-10T10:00',
+        endDate: '2021-10-10T10:00',
       });
 
       expect(spy).toHaveBeenCalled();
@@ -106,8 +106,8 @@ describe('AdminController', () => {
 
       await controller.updateAbstimmung('1', {
         name: 'Test',
-        startDate: new Date(),
-        endDate: new Date(),
+        startDate: '2021-10-10T10:00',
+        endDate: '2021-10-10T10:00',
       });
 
       expect(spy).toHaveBeenCalled();

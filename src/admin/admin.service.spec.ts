@@ -56,8 +56,8 @@ describe('AdminService', () => {
     it('should create a new abstimmung', async () => {
       const abstimmung: CreateAbstimmungDto = {
         name: 'test abstimmung',
-        startDate: new Date(),
-        endDate: new Date(),
+        startDate: '2022-01-01T00:00',
+        endDate: '2022-01-01T10:00',
       };
 
       await service.createAbstimmung(abstimmung);

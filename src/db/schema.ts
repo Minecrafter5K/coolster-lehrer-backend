@@ -44,8 +44,8 @@ export const voteTable = mysqlTable('vote_table', {
 export const abstimmungenTable = mysqlTable('abstimmungen_table', {
   id: int('id').primaryKey().autoincrement(),
   name: varchar('name', { length: 255 }).notNull(),
-  startDate: timestamp('start_date').notNull(),
-  endDate: timestamp('end_date').notNull(),
+  startDate: timestamp('start_date', { mode: 'string' }).notNull(),
+  endDate: timestamp('end_date', { mode: 'string' }).notNull(),
 });
 
 export const passkeyTable = mysqlTable('passkey_table', {

@@ -1,13 +1,13 @@
 export class CreateAbstimmungDto {
   id?: number;
   name: string;
-  startDate: Date;
-  endDate: Date;
+  startDate: string;
+  endDate: string;
 
-  constructor(id: number, name: string, startDate: Date, endDate: Date) {
+  constructor(name: string, startDate: Date, endDate: Date, id?: number) {
     this.id = id;
     this.name = name;
-    this.startDate = startDate;
-    this.endDate = endDate;
+    this.startDate = startDate.toISOString();
+    this.endDate = endDate.toISOString();
   }
 }
