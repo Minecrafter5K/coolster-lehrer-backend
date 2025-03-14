@@ -9,7 +9,7 @@ import {
 
 const bytea = customType<{ data: Uint8Array; notNull: false; default: false }>({
   dataType() {
-    return 'BLOB';
+    return 'blob';
   },
   toDriver(value: Uint8Array) {
     return Buffer.from(value);
