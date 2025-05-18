@@ -15,11 +15,11 @@ export class VotesController {
   @Post('bulk')
   async bulkCreate(
     @Body() createVoteDto: CreateVoteDto[],
-    @Req() req?: Request,
-    @Res({ passthrough: true }) res?: Response,
+    @Req() req: Request,
+    @Res({ passthrough: true }) res: Response,
   ) {
     // parse cookie
-    const raw = req?.cookies['voted'] as string | undefined;
+    const raw = req.cookies['voted'] as string | undefined;
     let votedCookie: number[] = [];
     if (raw) {
       try {
@@ -39,7 +39,7 @@ export class VotesController {
     );
 
     // set cookie
-    res?.cookie('voted', JSON.stringify(result.newVoted), {
+    res.cookie('voted', JSON.stringify(result.newVoted), {
       httpOnly: true,
       maxAge: 1000 * 60 * 60 * 24 * 365 * 2, // 2 years
     });

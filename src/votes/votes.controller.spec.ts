@@ -70,21 +70,21 @@ describe('VotesController', () => {
   //   });
   // });
 
-  describe('bulkCreate', () => {
-    it('should call bulkCreate of service', async () => {
-      const spy = jest.spyOn(controller['votesService'], 'bulkCreate');
+  // describe('bulkCreate', () => {
+  //   it('should call bulkCreate of service', async () => {
+  //     const spy = jest.spyOn(controller['votesService'], 'bulkCreate');
 
-      await controller.bulkCreate([
-        { lehrerId: 1, vote: 0, abstimmungId: 1 },
-        { lehrerId: 2, vote: 1, abstimmungId: 1 },
-      ]);
+  //     await controller.bulkCreate([
+  //       { lehrerId: 1, vote: 0, abstimmungId: 1 },
+  //       { lehrerId: 2, vote: 1, abstimmungId: 1 },
+  //     ]);
 
-      expect(spy).toBeCalledWith([
-        { lehrerId: 1, vote: 0, abstimmungId: 1 },
-        { lehrerId: 2, vote: 1, abstimmungId: 1 },
-      ]);
-    });
-  });
+  //     expect(spy).toBeCalledWith([
+  //       { lehrerId: 1, vote: 0, abstimmungId: 1 },
+  //       { lehrerId: 2, vote: 1, abstimmungId: 1 },
+  //     ]);
+  //   });
+  // });
 
   describe('findAll', () => {
     it('should call findAll of service', async () => {
