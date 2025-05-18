@@ -89,12 +89,12 @@ describe('VotesService', () => {
       const result1 = await service.bulkCreate([
         { lehrerId: 1, vote: 0, abstimmungId: 1 },
       ]);
-      expect(result1).toBe(1);
+      expect(result1.affectedRows).toBe(1);
       const result2 = await service.bulkCreate([
         { lehrerId: 1, vote: 0, abstimmungId: 1 },
         { lehrerId: 2, vote: 1, abstimmungId: 1 },
       ]);
-      expect(result2).toBe(2);
+      expect(result2.affectedRows).toBe(2);
     });
     it('should insert data into DB', async () => {
       await reset(db, { voteTable });
