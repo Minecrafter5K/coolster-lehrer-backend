@@ -52,23 +52,23 @@ describe('VotesController', () => {
     expect(controller).toBeDefined();
   });
 
-  describe('create', () => {
-    it('should call create of service', async () => {
-      const spy = jest.spyOn(controller['votesService'], 'create');
+  // describe('create', () => {
+  //   it('should call create of service', async () => {
+  //     const spy = jest.spyOn(controller['votesService'], 'create');
 
-      await controller.create({
-        lehrerId: 1,
-        vote: 0,
-        abstimmungId: 1,
-      });
+  //     await controller.create({
+  //       lehrerId: 1,
+  //       vote: 0,
+  //       abstimmungId: 1,
+  //     });
 
-      expect(spy).toBeCalledWith({
-        lehrerId: 1,
-        vote: 0,
-        abstimmungId: 1,
-      });
-    });
-  });
+  //     expect(spy).toBeCalledWith({
+  //       lehrerId: 1,
+  //       vote: 0,
+  //       abstimmungId: 1,
+  //     });
+  //   });
+  // });
 
   describe('bulkCreate', () => {
     it('should call bulkCreate of service', async () => {

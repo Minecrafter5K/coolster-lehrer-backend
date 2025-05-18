@@ -6,10 +6,10 @@ import { CreateVoteDto } from './dto/create-vote.dto';
 export class VotesController {
   constructor(private readonly votesService: VotesService) {}
 
-  @Post()
-  create(@Body() createVoteDto: CreateVoteDto) {
-    return this.votesService.create(createVoteDto);
-  }
+  // @Post()
+  // create(@Body() createVoteDto: CreateVoteDto) {
+  //   return this.votesService.create(createVoteDto);
+  // }
 
   @Post('bulk')
   bulkCreate(@Body() createVoteDto: CreateVoteDto[]) {
