@@ -1,6 +1,7 @@
-import { Controller, Get, Post, Body, Param } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Req, Res } from '@nestjs/common';
 import { VotesService } from './votes.service';
 import { CreateVoteDto } from './dto/create-vote.dto';
+import { Request, Response } from 'express';
 
 @Controller('votes')
 export class VotesController {
@@ -12,8 +13,38 @@ export class VotesController {
   // }
 
   @Post('bulk')
-  bulkCreate(@Body() createVoteDto: CreateVoteDto[]) {
-    return this.votesService.bulkCreate(createVoteDto);
+  async bulkCreate(
+    @Body() createVoteDto: CreateVoteDto[],
+    @Req() req: Request,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    // parse cookie
+    const raw = req.cookies['voted'] as string | undefined;
+    let votedCookie: number[] = [];
+    if (raw) {
+      try {
+        const parsed = JSON.parse(raw) as number[];
+        if (Array.isArray(parsed)) {
+          votedCookie = parsed.map((n) => Number(n)).filter((n) => !isNaN(n));
+        }
+      } catch {
+        // ignore invalid cookie
+      }
+    }
+
+    // mutate
+    const result = await this.votesService.bulkCreate(
+      createVoteDto,
+      votedCookie,
+    );
+
+    // set cookie
+    res.cookie('voted', JSON.stringify(result.newVoted), {
+      httpOnly: true,
+      maxAge: 1000 * 60 * 60 * 24 * 365 * 2, // 2 years
+    });
+
+    return { affectedRows: result.affectedRows };
   }
 
   @Get()

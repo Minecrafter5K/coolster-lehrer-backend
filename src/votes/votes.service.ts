@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, BadRequestException } from '@nestjs/common';
 import { CreateVoteDto } from './dto/create-vote.dto';
 import { drizzle, MySql2Database } from 'drizzle-orm/mysql2';
 import { abstimmungenTable, lehrerTable, voteTable } from '../db/schema';
@@ -20,9 +20,27 @@ export class VotesService {
     return null;
   }
 
-  async bulkCreate(createVoteDto: CreateVoteDto[]) {
+  async bulkCreate(
+    createVoteDto: CreateVoteDto[],
+    votedCookie: number[] = [],
+  ): Promise<{ affectedRows: number; newVoted: number[] }> {
+    const submittedIds = Array.from(
+      new Set(createVoteDto.map((v) => v.abstimmungId)),
+    );
+    const overlap = submittedIds.filter((id) => votedCookie.includes(id));
+    if (overlap.length > 0) {
+      throw new BadRequestException(
+        'User already voted for abstimmung ' + overlap.join(','),
+      );
+    }
+
+    // insert votes
     const result = await this.db.insert(voteTable).values(createVoteDto);
-    return result[0].affectedRows;
+    const affectedRows = result[0].affectedRows;
+
+    // update cookie
+    const newVoted = Array.from(new Set([...votedCookie, ...submittedIds]));
+    return { affectedRows, newVoted };
   }
 
   async findAll() {
