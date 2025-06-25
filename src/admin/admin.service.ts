@@ -1,11 +1,12 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { drizzle, MySql2Database } from 'drizzle-orm/mysql2';
 import { CreateAbstimmungDto } from './dto/create-abstimmung.dto';
-import { abstimmungenTable, lehrerTable } from '../db/schema';
+import { abstimmungenTable, lehrerTable, lehrerPhotoTable } from '../db/schema';
 import { eq } from 'drizzle-orm';
 import { CreateLehrerDto } from './dto/create-lehrer.dto';
 import { UpdateLehrerDto } from './dto/update-lehrer.dto';
 import { UpdateAbstimmungDto } from './dto/update-abstimmung.dto';
+import { CreateLehrerPhotoDto } from './dto/create-lehrer-photo.dto';
 
 @Injectable()
 export class AdminService {
@@ -50,6 +51,40 @@ export class AdminService {
 
   async deleteAbstimmung(id: number) {
     await this.db.delete(abstimmungenTable).where(eq(abstimmungenTable.id, id));
+    return null;
+  }
+
+  async addLehrerPhoto(id: number, createLehrerPhotoDto: CreateLehrerPhotoDto) {
+    const buffer = Buffer.from(createLehrerPhotoDto.photo, 'base64');
+    // insert photo
+    const inserted = await this.db
+      .insert(lehrerPhotoTable)
+      .values({ photo: buffer });
+
+    // update teacher with photo_id
+    await this.db
+      .update(lehrerTable)
+      .set({ photo_id: inserted[0].insertId })
+      .where(eq(lehrerTable.id, id));
+    return null;
+  }
+
+  async deleteLehrerPhoto(id: number) {
+    // find existing photo_id
+    const [lehrer] = await this.db
+      .select({ photo_id: lehrerTable.photo_id })
+      .from(lehrerTable)
+      .where(eq(lehrerTable.id, id))
+      .limit(1);
+    if (lehrer?.photo_id) {
+      await this.db
+        .delete(lehrerPhotoTable)
+        .where(eq(lehrerPhotoTable.id, lehrer.photo_id));
+      await this.db
+        .update(lehrerTable)
+        .set({ photo_id: null })
+        .where(eq(lehrerTable.id, id));
+    }
     return null;
   }
 }

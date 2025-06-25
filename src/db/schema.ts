@@ -19,9 +19,34 @@ const bytea = customType<{ data: Uint8Array; notNull: false; default: false }>({
   },
 });
 
+const mediumBytea = customType<{
+  data: Uint8Array;
+  notNull: false;
+  default: false;
+}>({
+  dataType() {
+    return 'mediumblob';
+  },
+  toDriver(value: Uint8Array) {
+    return Buffer.from(value);
+  },
+  fromDriver(value: unknown) {
+    return new Uint8Array(value as Buffer);
+  },
+});
+
 export const lehrerTable = mysqlTable('lehrer_table', {
   id: int('id').primaryKey().autoincrement(),
   name: varchar('name', { length: 255 }).notNull(),
+  photo_id: int('photo_id').references(() => lehrerPhotoTable.id, {
+    onDelete: 'set null',
+    onUpdate: 'cascade',
+  }),
+});
+
+export const lehrerPhotoTable = mysqlTable('lehrer_photo_table', {
+  id: int('id').primaryKey().autoincrement(),
+  photo: mediumBytea('photo').notNull(),
 });
 
 export const voteTable = mysqlTable('vote_table', {

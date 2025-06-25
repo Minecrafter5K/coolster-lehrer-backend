@@ -43,6 +43,13 @@
       "when": 1741964813694,
       "tag": "0005_sticky_thunderbolt",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "5",
+      "when": 1750865257578,
+      "tag": "0006_exotic_doomsday",
+      "breakpoints": true
     }
   ]
 }

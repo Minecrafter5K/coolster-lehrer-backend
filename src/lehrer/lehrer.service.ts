@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { drizzle, MySql2Database } from 'drizzle-orm/mysql2';
-import { lehrerTable } from '../db/schema';
+import { lehrerTable, lehrerPhotoTable } from '../db/schema';
 import { eq } from 'drizzle-orm';
 
 @Injectable()
@@ -24,5 +24,20 @@ export class LehrerService implements LehrerService {
       .limit(1);
 
     return lehrer[0];
+  }
+
+  async getPhoto(id: number): Promise<Uint8Array | null> {
+    // const result = await this.db
+    //   .select({ photo: lehrerPhotoTable.photo })
+    //   .from(lehrerPhotoTable)
+    //   .where(eq(lehrerPhotoTable.lehrerId, id))
+    //   .limit(1);
+    const result = await this.db
+      .select({ photo: lehrerPhotoTable.photo })
+      .from(lehrerTable)
+      .where(eq(lehrerTable.id, id))
+      .leftJoin(lehrerPhotoTable, eq(lehrerTable.photo_id, lehrerPhotoTable.id))
+      .limit(1);
+    return result[0]?.photo ?? null;
   }
 }
