@@ -18,5 +18,11 @@ export default async function seedDb(db: MySql2Database): Promise<void> {
     lehrerTable: {
       count: 10,
     },
+    lehrerPhotoTable: {
+      count: 0,
+      columns: {
+        photo: undefined,
+      },
+    },
   }));
 }
